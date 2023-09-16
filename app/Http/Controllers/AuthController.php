@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image as convertImage;
+use PHPUnit\Framework\Attributes\IgnoreFunctionForCodeCoverage;
 
 class AuthController extends Controller
 {
@@ -42,7 +43,7 @@ class AuthController extends Controller
 
         $validate = request()->validate([
             'nama' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users',
             'username' => 'required|unique:users|min:5',
             'password' => ['required', 'min:5', 'confirmed'],
 
@@ -70,9 +71,9 @@ class AuthController extends Controller
     public function updateUser()
     {
         $validated = request()->validate([
-            'name' => 'required',
-            'username' => 'required',
-            'password' => 'required',
+            'nama' => 'required',
+            'username' => 'required:unique:users|min:5',
+            'password' => ['required', 'min:5', 'confirmed'],
             'file' => 'image|mimes:jpeg,png,jpg,gif,svg',
         ]);
         // dd($validated);
@@ -92,5 +93,14 @@ class AuthController extends Controller
             return redirect()->back()->withErrors(['msg' => 'Gagal Update']);
         } else
             return redirect()->back()->with('status', 'Berhasil Update');
+    }
+    public function deleteuser()
+    {
+        $user = User::find(request()->id);
+        if ($user->pathuserpicture) {
+            unlink($user->pathuserpicture);
+        }
+        $user->delete();
+        return redirect()->back()->with('status', 'Berhasil Delete');
     }
 }

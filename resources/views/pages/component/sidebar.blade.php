@@ -4,5 +4,11 @@
         <span>Dashboard</span>
     </a>
 </li>
-{{-- @if (Auth::user()->role == 2 || Auth::user()->role == 1)
-@endif --}}
+@if (Auth::user()->role->id == 2 || Auth::user()->role->id == 1)
+    <li class="sidebar-item @if (Request::path() == 'manageuser') active @endif">
+        <a href="{{ route('manageuser') }}" class="sidebar-link ">
+            <i class="bi bi-grid-fill"></i>
+            <span>Manageuser</span>
+        </a>
+    </li>
+@endif

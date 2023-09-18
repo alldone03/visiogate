@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('logtaprfids', function (Blueprint $table) {
             $table->id();
             $table->string('rfiddata');
-            $table->string('username');
-            $table->string('keterangan');
-            $table->boolean('respon');
-            $table->boolean('ismasuk');
+            $table->string('username')->nullable();
+            $table->string('keterangan'); // masuk atau keluar
+            $table->boolean('respon'); // jika tidak ada data di database maka respon = false
+
             $table->timestamps();
         });
     }

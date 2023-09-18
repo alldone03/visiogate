@@ -90,9 +90,20 @@
                         type: "GET",
                         dataType: "json",
                         success: function(data) {
+                            // console.log(data);
+                            if (data.status == 0) {
+                                $('.labelname').html(
+                                    '<span style="color: red;">ambil dari last data logtap</span>'
+                                )
 
-                            $('#iduser').val(data.id);
-                            $('#rfiddata').val(data.namatoko);
+                                $('#iduser').val(data.user.id);
+                                $('#rfiddata').val(data.logtap[0].rfiddata);
+                            } else {
+                                $('.labelname').html(
+                                    'RFID Data'
+                                )
+                                $('#rfiddata').val(data.user.rfiddata);
+                            }
                             $('#inlineFormEdit').modal('show');
                         }
                     });

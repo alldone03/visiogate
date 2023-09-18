@@ -11,4 +11,10 @@
             <span>Manageuser</span>
         </a>
     </li>
+    <li class="sidebar-item @if (Request::path() == 'logtap') active @endif">
+        <a href="{{ route('logtap') }}" class="sidebar-link ">
+            <i class="bi bi-grid-fill"></i>
+            <span>Logtap</span>
+        </a>
+    </li>
 @endif

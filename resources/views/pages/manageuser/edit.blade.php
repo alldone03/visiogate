@@ -19,7 +19,7 @@
             <form id="updateRF" target="frame2">
                 <input type="hidden" name="iduser" id="iduser" value="">
                 <div class="modal-body">
-                    <label for="rfiddata">RFID Data: </label>
+                    <label for="rfiddata" class="labelname">RFID Data </label>
                     <div class="form-group">
                         <input id="rfiddata" name="rfiddata" type="text" placeholder="00000000000000000"
                             class="form-control" value="" required>

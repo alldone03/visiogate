@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Logtaprfid;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -51,7 +52,19 @@ class ManageuserController extends Controller
     }
     public function edit(User $user)
     {
-        return response()->json($user);
+        if ($user->rfiddata == null) {
+
+            $logtap = Logtaprfid::orderBy('updated_at', 'desc')->take(1)->get();
+            return response()->json([
+                'user' => $user,
+                'logtap' => $logtap,
+                'status' => 0
+            ]);
+        }
+        return response()->json([
+            'user' => $user,
+            'status' => 'success'
+        ]);
     }
     public function update(User $user)
     {

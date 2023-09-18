@@ -22,6 +22,7 @@
         <link rel="stylesheet" href="{{ asset('assets/compiled/css/app-dark.css') }}" />
     @endpush
     @push('scripts')
+        @include('pages.manageuser.edit')
         <script src="{{ asset('assets/static/js/components/dark.js') }}"></script>
         <script src="{{ asset('assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
 
@@ -39,6 +40,8 @@
         <script src="{{ asset('assets/extensions/toastify-js/src/toastify.js') }}"></script>
 
         <script>
+            var flagreload = 0;
+            var lastlogtap = "";
             $(document).ready(function() {
                 @if (session()->has('success'))
                     Toastify({
@@ -50,60 +53,29 @@
                         backgroundColor: "#4fbe87",
                     }).showToast()
                 @endif
-                $('#table1').DataTable();
-                $('#edit').on('click', function(e) {
-                    e.preventDefault();
-                    var id = $(this).attr('data-bs-id');
-                })
-                $('.ismasuk').on('click', function(e) {
-                    e.preventDefault();
-                    var id = $(this).attr('data-bs-id');
-                    var ismasuk = $(this).html() == 1 ? 0 : 1;
-
-                    $(this).text(ismasuk)
-                    if (!ismasuk) {
-                        $(this).removeClass("btn-outline-success");
-                        $(this).addClass("btn-outline-danger");
-                    } else {
-                        $(this).removeClass("btn-outline-danger");
-                        $(this).addClass("btn-outline-success");
-                    }
-                    $.ajax({
-                        type: "POST",
-                        dataType: "json",
-                        url: '{{ route('manageuserupdate') }}',
-                        data: {
-                            'id': id,
-                            'ismasuk': ismasuk
-                        },
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        success: function(data) {
-                            console.log(data.success)
-                            if (data.status == 'success') {
-                                Toastify({
-                                    text: data.message,
-                                    duration: 3000,
-                                    gravity: "top",
-                                    position: 'right',
-                                    backgroundColor: "#228B22",
-                                    stopOnFocus: true,
-                                }).showToast();
-                            } else {
-                                Toastify({
-                                    text: data.message,
-                                    duration: 3000,
-                                    gravity: "top",
-                                    position: 'right',
-                                    backgroundColor: "#FF0000",
-                                    stopOnFocus: true,
-                                }).showToast();
-                            }
-
-                        }
-                    });
+                $('#tableLogtap').DataTable({
+                    order: [
+                        [5, 'desc'],
+                    ],
                 });
+                setInterval(() => {
+                    $.ajax({
+                        url: "{{ route('getuppdatelog') }}",
+                        type: 'GET',
+                        dataType: "JSON",
+                        success: function(data) {
+                            console.log(data);
+
+                            if (flagreload == 1 && lastlogtap != data) {
+                                window.location.reload();
+                            }
+                            lastlogtap = data;
+                            flagreload = 1;
+                        }
+                    })
+                }, 2000);
+
+
             });
         </script>
     @endpush
@@ -121,47 +93,26 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table" id="table1">
+                    <table class="table" id="tableLogtap">
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Nama</th>
-                                <th>Email</th>
                                 <th>rfiddata</th>
-                                <th>Roles</th>
-                                <th>IsMasuk</th>
-                                <th>Action</th>
+                                <th>respon</th>
+                                <th>username</th>
+                                <th>keterangan</th>
+                                <th>Time</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($user as $d)
+                            @foreach ($logtap as $d)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $d['nama'] }}</td>
-                                    <td>{{ $d['email'] }}</td>
                                     <td>{{ $d['rfiddata'] }}</td>
-                                    <td>{{ $d->role->namarole }}</td>
-                                    <td><button
-                                            class="btn @if ($d['ismasuk'] == 1) btn-outline-success @else btn-outline-danger @endif  ismasuk "
-                                            data-bs-id="{{ $d['id'] }}" type="button" name="ismasuk">
-                                            @if ($d['ismasuk'] == 1)
-                                                1
-                                            @else
-                                                0
-                                            @endif
-                                        </button>
-                                    </td>
-
-                                    <td>
-                                        <button type="button" class="btn btn-outline-warning">Edit</button>
-                                        <form method="POST" action="{{ route('manageuser') . '/delete/' . $d['id'] }}">
-                                            @csrf
-                                            <input name="_method" type="hidden" class="btn-primary btn-xs" value="DELETE">
-                                            <button type="submit" onclick="return confirm('Are you sure?')"
-                                                class="btn btn-outline-danger">
-                                                DELETE
-                                            </button>
-                                        </form>
+                                    <td>{{ $d['respon'] }}</td>
+                                    <td>{{ $d['username'] }}</td>
+                                    <td>{{ $d['keterangan'] }}</td>
+                                    <td>{{ $d['updated_at'] }}
                                     </td>
                                 </tr>
                             @endforeach

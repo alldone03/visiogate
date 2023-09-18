@@ -2,11 +2,12 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LogtapController;
 use App\Http\Controllers\ManageuserController;
 use App\Http\Controllers\SettingController;
-use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Support\Facades\Route;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,9 @@ Route::middleware('guest')->group(
             })->name('register');
             Route::post('/login', 'loginProcess')->name('loginProcess');
             Route::post('/register', 'registerProcess')->name('registerProcess');
+        });
+        Route::controller(LogtapController::class)->prefix('logtap')->group(function () {
+            Route::get('/tap', 'addtap')->name('logtap/tap');
         });
     }
 );
@@ -65,6 +69,12 @@ Route::middleware('auth')->group(
                 Route::delete('/delete/{id}', 'deleteuser')->name('manageuserdelete');
             }
 
+        );
+        Route::controller(LogtapController::class)->prefix('logtap')->group(
+            function () {
+                Route::get('/', 'index')->name('logtap');
+                Route::get('/getupdatetap', 'lasttap')->name('getuppdatelog');
+            }
         );
     }
 );

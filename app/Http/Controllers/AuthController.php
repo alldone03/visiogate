@@ -73,7 +73,7 @@ class AuthController extends Controller
         $validated = request()->validate([
             'nama' => 'required',
             'username' => 'required:unique:users|min:5',
-            'password' => ['required', 'min:5', 'confirmed'],
+            'password' => ['required', 'min:5',],
             'file' => 'image|mimes:jpeg,png,jpg,gif,svg',
         ]);
         // dd($validated);
@@ -84,6 +84,7 @@ class AuthController extends Controller
         $webp_image = convertImage::make(request()->file('file'))->encode('webp', 90)->save('storage/images/' . request()->file('file')->hashName() . '.webp');
 
         $hasil = $user->update([
+            'nama' => $validated['nama'],
             'username' => $validated['username'],
             'email' => request()['email'],
             'password' => bcrypt($validated['password']),

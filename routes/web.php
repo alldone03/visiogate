@@ -52,6 +52,8 @@ Route::middleware('auth')->group(
         });
         Route::controller(DashboardController::class)->prefix('dashboard')->group(function () {
             Route::get('/', 'dashboard')->name('dashboard');
+            Route::get('/getrealtimestate', 'getrealtimestate')->name('getrealtimestate');
+            Route::post('/changestate', 'changestate')->name('changestate');
         });
         Route::controller(SettingController::class)->prefix('setting')->group(
             function () {

@@ -84,7 +84,7 @@
                 $('.edit').on('click', function(e) {
                     e.preventDefault();
                     var id = $(this).attr('data-bs-id');
-                    // console.log(id);
+
                     $.ajax({
                         url: "{{ url()->current() }}/edit/" + id,
                         type: "GET",
@@ -95,9 +95,10 @@
                                 $('.labelname').html(
                                     '<span style="color: red;">ambil dari last data logtap</span>'
                                 )
-
                                 $('#iduser').val(data.user.id);
-                                $('#rfiddata').val(data.logtap[0].rfiddata);
+                                if (data.logtap[0] != null) {
+                                    $('#rfiddata').val(data.logtap[0].rfiddata);
+                                }
                             } else {
                                 $('.labelname').html(
                                     'RFID Data'
@@ -113,7 +114,6 @@
                     e.preventDefault();
                     var id = $(this).attr('data-bs-id');
                     var ismasuk = $(this).html() == 1 ? 0 : 1;
-
                     $(this).text(ismasuk)
                     if (!ismasuk) {
                         $(this).removeClass("btn-outline-success");
@@ -205,7 +205,6 @@
                                             @endif
                                         </button>
                                     </td>
-
                                     <td>
                                         <button type="button" class="btn btn-outline-warning edit"
                                             data-bs-id="{{ $d['id'] }}">Edit</button>

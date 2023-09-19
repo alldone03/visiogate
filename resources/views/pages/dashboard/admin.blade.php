@@ -11,12 +11,117 @@
             type="image/png" />
         <link rel="stylesheet" href="{{ asset('assets/compiled/css/app.css') }}" />
         <link rel="stylesheet" href="{{ asset('assets/compiled/css/app-dark.css') }}" />
+        <link rel="stylesheet" href="{{ asset('assets/extensions/toastify-js/src/toastify.css') }}" />
     @endpush
     @push('scripts')
         <script src="{{ asset('assets/static/js/components/dark.js') }}"></script>
         <script src="{{ asset('assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
-
+        <script src="{{ asset('assets/js/extensions/code.jquery.com_jquery-3.7.1.js') }}"></script>
         <script src="{{ asset('assets/compiled/js/app.js') }}"></script>
+        <script src="{{ asset('assets/extensions/toastify-js/src/toastify.js') }}"></script>
+        <script>
+            $(document).ready(function() {
+                $('.btnmasuk').on('click', function() {
+                    var data = 0;
+                    if ($('.btnmasuk').html() == 'Pintu Masuk Terbuka') {
+                        data = 0;
+                    } else {
+                        data = 1;
+                    }
+                    $.ajax({
+                        url: "{{ route('changestate') }}",
+                        type: 'POST',
+                        dataType: "JSON",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            'data': 'masuk',
+                            'state': data,
+                        },
+                        success: function(data) {
+
+                            Toastify({
+                                text: data.message,
+                                duration: 3000,
+                                gravity: "top",
+                                position: 'right',
+                                backgroundColor: "#228B22",
+                                stopOnFocus: true,
+                            }).showToast();
+                        }
+                    })
+
+                })
+                $('.btnkeluar').on('click', function() {
+
+                    var datakeluar = 0;
+
+
+                    if ($('.btnkeluar').html() == 'Pintu Keluar Tertutup') {
+                        datakeluar = 1;
+                    } else {
+                        datakeluar = 0;
+                    }
+
+                    $.ajax({
+                        url: "{{ route('changestate') }}",
+                        type: 'POST',
+                        dataType: "JSON",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            'data': 'keluar',
+                            'state': datakeluar,
+                        },
+                        success: function(data) {
+
+                            Toastify({
+                                text: data,
+                                duration: 3000,
+                                gravity: "top",
+                                position: 'right',
+                                backgroundColor: "#228B22",
+                                stopOnFocus: true,
+                            }).showToast();
+                        }
+                    })
+
+                })
+                setInterval(() => {
+                    $.ajax({
+                        url: "{{ route('getrealtimestate') }}",
+                        type: 'GET',
+                        dataType: "JSON",
+                        success: function(data) {
+
+                            if (data[0]['state']) {
+                                $('.btnmasuk').html('Pintu Masuk Terbuka')
+                                $('.btnmasuk').removeClass('btn-outline-danger');
+                                $('.btnmasuk').addClass('btn-outline-success');
+                            } else {
+                                $('.btnmasuk').html('Pintu Masuk Tertutup')
+                                $('.btnmasuk').removeClass('btn-outline-success');
+                                $('.btnmasuk').addClass('btn-outline-danger');
+                            }
+                            if (data[1]['state']) {
+                                $('.btnkeluar').html('Pintu Keluar Terbuka')
+                                $('.btnkeluar').removeClass('btn-outline-danger');
+                                $('.btnkeluar').addClass('btn-outline-success');
+                            } else {
+                                $('.btnkeluar').html('Pintu Keluar Tertutup')
+                                $('.btnkeluar').removeClass('btn-outline-success');
+                                $('.btnkeluar').addClass('btn-outline-danger');
+
+                            }
+
+                        }
+                    })
+
+                }, 2000);
+            })
+        </script>
     @endpush
     <script src="{{ asset('assets/static/js/initTheme.js') }}"></script>
     @extends('pages.layout')
@@ -31,21 +136,16 @@
     <section class="section">
         <div class="card">
             <div class="card-body">
-                <div class="row">
+                <div class="row justify-content-around">
                     <div class="col-sm-12 col-md-2">
-                        <div class="card" style="outline-color: #435ebe; outline-width: initial; outline-style: dotted;">
-                            <div class="card-content">
-                                <img class="card-img-top img-fluid" src="./assets/compiled/jpg/origami.jpg"
-                                    alt="Card image cap" style="height: 15rem" />
-                                <div class="card-body">
-                                    <h4 class="card-title">Joder Ka D</h4>
-                                    <p class="card-text">
-                                        Harga : 1000rb
-                                    </p>
-                                    <button class="btn btn-primary block">Add To Cart</button>
-                                </div>
-                            </div>
-                        </div>
+                        <button class="btn btn-outline-danger btnmasuk" style=" height: 300px; width:300px">
+                            Pintu Masuk Tertutup
+                        </button>
+                    </div>
+                    <div class="col-sm-12 col-md-2">
+                        <button class="btn btn-outline-danger btnkeluar" style=" height: 300px; width:300px">
+                            Pintu Keluar Tertutup
+                        </button>
                     </div>
                 </div>
             </div>

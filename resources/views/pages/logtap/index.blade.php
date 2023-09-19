@@ -64,7 +64,7 @@
                         type: 'GET',
                         dataType: "JSON",
                         success: function(data) {
-                            console.log(data);
+                            // console.log(data);
 
                             if (flagreload == 1 && lastlogtap != data) {
                                 window.location.reload();

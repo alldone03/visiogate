@@ -11,8 +11,9 @@ class LogtapController extends Controller
     public function index()
     {
         $logtap = Logtaprfid::all();
-        $lastlogtap = Logtaprfid::orderBy('updated_at', 'desc')->take(1)->get()[0]['updated_at'];
-        return view('pages.logtap.index', compact('logtap', 'lastlogtap'));
+        // dd($logtap);
+        // $lastlogtap = Logtaprfid::orderBy('updated_at', 'desc')->take(1)->get()[0]['updated_at'];
+        return view('pages.logtap.index', compact('logtap'));
     }
     public function addtap()
     {
